@@ -1,0 +1,7 @@
+divvyr is a Ruby app that distributes season tickets fairly to multiple buyers by way of a draft.
+
+Quick Start:
+$ gem install bundler
+$ gem update --system
+$ bundle install
+$ ruby app.rb
