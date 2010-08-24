@@ -4,6 +4,7 @@ require 'faster_csv'
 require 'highline/import'
 
 require 'buyer'
+require 'entry'
 require 'game'
 require 'season'
 
@@ -159,6 +160,24 @@ loop do
     
     if !@season.games.empty? && !@season.buyers.empty?
       menu.choice 'run draft' do
+        @season.buyers.each do |buyer|
+          puts "#{buyer.name} gets #{@season.num_draft_entries_for(buyer, 5)} entr#{@season.num_draft_entries_for(buyer, 5) == 1 ? 'y' : 'ies'}"
+        end
+        puts "Entries are as follows:"
+        entries = []
+        @season.buyers.each do |buyer|
+          counter = 0
+          @season.draft_entries_for(buyer, 5).each do |entry|
+            entries << entry
+            counter += 1
+            puts entry
+          end
+        end
+        puts "Randomized entries:"
+        entries.shuffle!
+        entries.each do |e|
+          puts e
+        end
       end
     end
     
