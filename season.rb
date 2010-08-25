@@ -1,11 +1,12 @@
 require 'yaml'
 
 class Season
-  attr_accessor :games, :buyers
+  attr_accessor :games, :buyers, :entries
   
   def initialize
     @games = []
     @buyers = []
+    @entries = []
   end
   
   def list_games
@@ -33,9 +34,8 @@ class Season
     num_entries
   end
   
-  def draft_entries_for(buyer, num_games)
+  def create_draft_entries_for(buyer, num_games)
     num_entries = num_draft_entries_for(buyer, num_games)
-    entries = []
     for this_entry_index in 1..num_entries do
       extras = buyer.number_of_games % num_games
       if this_entry_index < num_entries || extras == 0
@@ -49,6 +49,15 @@ class Season
         entries << Entry.new(buyer.name, this_entry_data)
       end
     end
-    entries
+  end
+  
+  def generate_entries
+    self.entries = []
+    buyers.each do |b|
+      create_draft_entries_for(b, 5)
+    end
+  end
+  def randomize_entries
+    entries.shuffle!
   end
 end

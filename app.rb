@@ -163,20 +163,19 @@ loop do
         @season.buyers.each do |buyer|
           puts "#{buyer.name} gets #{@season.num_draft_entries_for(buyer, 5)} entr#{@season.num_draft_entries_for(buyer, 5) == 1 ? 'y' : 'ies'}"
         end
+        @season.generate_entries
         puts "Entries are as follows:"
-        entries = []
-        @season.buyers.each do |buyer|
-          counter = 0
-          @season.draft_entries_for(buyer, 5).each do |entry|
-            entries << entry
-            counter += 1
-            puts entry
-          end
+        counter = 1
+        @season.entries.each do |e|
+          puts "#{counter}. #{e}"
+          counter += 1
         end
         puts "Randomized entries:"
-        entries.shuffle!
-        entries.each do |e|
-          puts e
+        @season.randomize_entries
+        counter = 1
+        @season.entries.each do |e|
+          puts "#{counter}. #{e}"
+          counter += 1
         end
       end
     end
