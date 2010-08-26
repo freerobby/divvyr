@@ -203,6 +203,53 @@ loop do
           counter += 1
         end
       end
+      
+      if !@season.entries.empty?
+        menu.choice 'view draft entries in order' do
+          counter = 1
+          @season.entries.each do |e|
+            puts "#{counter}. #{e}"
+            counter += 1
+          end
+        end
+        menu.choice 'edit draft entries' do
+          selected_entry = 1
+          while !selected_entry.nil?
+            choose do |draft_entry|
+              draft_entry.index = :letter
+              draft_entry.index_suffix = ') '
+              draft_entry.prompt = 'Which draft entry to modfy?: '
+              
+              draft_entry.choice 'go back' do
+                selected_entry = nil
+              end
+              @season.entries.each do |entry|
+                draft_entry.choice entry do
+                  selected_entry = entry
+                end
+              end
+            end
+            if !selected_entry.nil?
+              length = selected_entry.round_data.size
+              puts "Current entry: #{selected_entry}"
+              new_entry = []
+              for i in 1..length do
+                new_entry.push(ask("Entry value at position #{i}: "))
+              end
+              selected_entry.round_data = new_entry
+            end
+          end
+        end
+        menu.choice 'random order draft entries' do
+          puts "Randomized entries:"
+          @season.randomize_entries
+          counter = 1
+          @season.entries.each do |e|
+            puts "#{counter}. #{e}"
+            counter += 1
+          end
+        end
+      end
     end
     
     menu.choice 'exit' do
