@@ -267,6 +267,19 @@ loop do
           end
           @season.entries = new_entries
         end
+        menu.choice 'validate draft entries' do
+          puts "Season has #{@season.games.size} games"
+          count = 0
+          @season.entries.each do |entry|
+            entry.round_data.each {|l| count +=1 if l == 'P'}
+          end
+          puts "Entries will draft #{count} games"
+          if @season.games.size == count
+            say "Current state of entries is <%= color('valid', GREEN) %>."
+          else
+            say "Current state of entries is <%= color('invalid', RED) %>."
+          end
+        end
       end
     end
     
