@@ -68,4 +68,11 @@ class Season
     end
     game
   end
+  def buyer_by_name(buyer_name)
+    buyer = nil
+    buyers.each do |b|
+      buyer = b if b.name == buyer_name
+    end
+    buyer
+  end
 end

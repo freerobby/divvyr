@@ -280,6 +280,55 @@ loop do
             say "Current state of entries is <%= color('invalid', RED) %>."
           end
         end
+        
+        menu.choice 'run draft' do
+          say "Running draft..."
+          num_rounds = @season.entries.first.round_data.size
+          remaining_game_ids = []
+          @season.games.each {|g| remaining_game_ids << g.identifier}
+          
+          for round_index in 1..num_rounds do
+            say "Beginning draft round #{round_index}"
+            counter = 1
+            if round_index % 2 == 1
+              @season.entries.each do |entry|
+                buyer = @season.buyer_by_name(entry.buyer_name)
+              
+                if entry.round_data[round_index - 1] == 'P'
+                  buyer.games_priority.each do |game_id|
+                    if !remaining_game_ids.index(game_id).nil?
+                      say "Round #{round_index}, pick #{counter} belongs to #{buyer.name}: #{@season.game_by_identifier(game_id)}\n"
+                      remaining_game_ids.delete(game_id)
+                      break
+                    end
+                  end
+                
+                  counter += 1
+                else
+                  say "Skipping #{buyer}; no pick this round."
+                end
+              end
+            else
+              @season.entries.reverse_each do |entry|
+                buyer = @season.buyer_by_name(entry.buyer_name)
+              
+                if entry.round_data[round_index - 1] == 'P'
+                  buyer.games_priority.each do |game_id|
+                    if !remaining_game_ids.index(game_id).nil?
+                      say "Round #{round_index}, pick #{counter} belongs to #{buyer.name}: #{@season.game_by_identifier(game_id)}\n"
+                      remaining_game_ids.delete(game_id)
+                      break
+                    end
+                  end
+                
+                  counter += 1
+                else
+                  say "Skipping #{buyer}; no pick this round."
+                end
+              end
+            end
+          end
+        end
       end
     end
     
