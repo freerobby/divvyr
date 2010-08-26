@@ -134,6 +134,7 @@ loop do
           end
         end
         if !selected_buyer.nil?
+          selected_buyer.games_priority = [] if selected_buyer.games_priority.size == @season.games.size
           selected_game = 1
           while selected_buyer.games_priority.size < @season.games.size && selected_game != nil do
             selected_game = nil
@@ -240,6 +241,11 @@ loop do
             end
           end
         end
+        menu.choice 'remove inactive draft entries' do
+          say "Starting with #{@season.entries.size} entries."
+          @season.entries.each {|e| @season.entries.delete(e) unless e.round_data.include?('P')}
+          say "Finished with #{@season.entries.size} entries remaining."
+        end
         menu.choice 'random order draft entries' do
           puts "Randomized entries:"
           @season.randomize_entries
@@ -288,6 +294,7 @@ loop do
           @season.games.each {|g| remaining_game_ids << g.identifier}
           
           for round_index in 1..num_rounds do
+            break if remaining_game_ids.empty?
             say "Beginning draft round #{round_index}"
             counter = 1
             if round_index % 2 == 1
