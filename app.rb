@@ -249,6 +249,24 @@ loop do
             counter += 1
           end
         end
+        menu.choice 'manual order draft entries' do
+          new_entries = []
+          while @season.entries.size > 0
+            choose do |next_entry|
+              next_entry.index = :letter
+              next_entry.index_suffix = ') '
+              next_entry.prompt = 'Choose next entry: '
+              
+              @season.entries.each do |entry|
+                next_entry.choice entry do
+                  new_entries.push(entry)
+                  @season.entries.delete(entry)
+                end
+              end
+            end
+          end
+          @season.entries = new_entries
+        end
       end
     end
     
