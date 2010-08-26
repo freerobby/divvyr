@@ -156,6 +156,31 @@ loop do
           end
         end
       end
+      
+      menu.choice 'view buyer game preferences' do
+        selected_buyer = 1
+        while !selected_buyer.nil?
+          choose do |buyer|
+            buyer.index = :letter
+            buyer.index_suffix = ') '
+            buyer.prompt = "Player's game selections to view: "
+            buyer.choice 'go back' do
+              selected_buyer = nil
+            end
+            @season.buyers.each do |season_buyer|
+              buyer.choice season_buyer do
+                selected_buyer = season_buyer
+              end
+            end
+          end
+          if !selected_buyer.nil?
+            puts "Displaying choices for #{selected_buyer}:"
+            for index in 1..@season.games.size do
+              puts "#{index}. #{@season.game_by_identifier(selected_buyer.games_priority[index - 1])}"
+            end
+          end
+        end
+      end
     end
     
     if !@season.games.empty? && !@season.buyers.empty?

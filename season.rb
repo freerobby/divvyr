@@ -60,4 +60,12 @@ class Season
   def randomize_entries
     entries.shuffle!
   end
+  
+  def game_by_identifier(id)
+    game = nil
+    games.each do |g|
+      game = g if g.identifier == id
+    end
+    game
+  end
 end
