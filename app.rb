@@ -184,7 +184,7 @@ loop do
     end
     
     if !@season.games.empty? && !@season.buyers.empty?
-      menu.choice 'run draft' do
+      menu.choice 'prepare draft' do
         @season.buyers.each do |buyer|
           puts "#{buyer.name} gets #{@season.num_draft_entries_for(buyer, 5)} entr#{@season.num_draft_entries_for(buyer, 5) == 1 ? 'y' : 'ies'}"
         end
