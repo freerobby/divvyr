@@ -158,7 +158,13 @@ loop do
         end
       end
       
-      menu.choice 'view buyer game preferences' do
+      menu.choice 'view all buyer game preferences' do
+        @season.buyers.each do |buyer|
+          puts "#{buyer.name}: #{buyer.games_priority.join(', ')}"
+        end
+      end
+      
+      menu.choice 'view single buyer game preferences' do
         selected_buyer = 1
         while !selected_buyer.nil?
           choose do |buyer|
