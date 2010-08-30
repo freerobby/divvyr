@@ -310,7 +310,7 @@ loop do
                 if entry.round_data[round_index - 1] == 'P'
                   buyer.games_priority.each do |game_id|
                     if !remaining_game_ids.index(game_id).nil?
-                      say "Round #{round_index}, pick #{counter} belongs to #{buyer.name}: #{@season.game_by_identifier(game_id)}\n"
+                      say "Round #{round_index}, pick #{counter} belongs to #{buyer.name} (choice ##{buyer.games_priority.index(game_id)+1}): #{@season.game_by_identifier(game_id)}\n"
                       remaining_game_ids.delete(game_id)
                       break
                     end
@@ -328,7 +328,7 @@ loop do
                 if entry.round_data[round_index - 1] == 'P'
                   buyer.games_priority.each do |game_id|
                     if !remaining_game_ids.index(game_id).nil?
-                      say "Round #{round_index}, pick #{counter} belongs to #{buyer.name}: #{@season.game_by_identifier(game_id)}\n"
+                      say "Round #{round_index}, pick #{counter} belongs to #{buyer.name} (choice ##{buyer.games_priority.index(game_id)+1}): #{@season.game_by_identifier(game_id)}\n"
                       remaining_game_ids.delete(game_id)
                       break
                     end
