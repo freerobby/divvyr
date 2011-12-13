@@ -295,6 +295,9 @@ loop do
         
         menu.choice 'run draft' do
           say "Running draft..."
+          buyer_games = {}
+          @season.buyers.each {|b| buyer_games[b.name] = []}
+          
           num_rounds = @season.entries.first.round_data.size
           remaining_game_ids = []
           @season.games.each {|g| remaining_game_ids << g.identifier}
@@ -311,6 +314,7 @@ loop do
                   buyer.games_priority.each do |game_id|
                     if !remaining_game_ids.index(game_id).nil?
                       say "Round #{round_index}, pick #{counter} belongs to #{buyer.name} (choice ##{buyer.games_priority.index(game_id)+1}): #{@season.game_by_identifier(game_id)}\n"
+                      buyer_games[buyer.name] << game_id
                       remaining_game_ids.delete(game_id)
                       break
                     end
@@ -329,6 +333,7 @@ loop do
                   buyer.games_priority.each do |game_id|
                     if !remaining_game_ids.index(game_id).nil?
                       say "Round #{round_index}, pick #{counter} belongs to #{buyer.name} (choice ##{buyer.games_priority.index(game_id)+1}): #{@season.game_by_identifier(game_id)}\n"
+                      buyer_games[buyer.name] << game_id
                       remaining_game_ids.delete(game_id)
                       break
                     end
@@ -339,6 +344,13 @@ loop do
                   say "Skipping #{buyer}; no pick this round."
                 end
               end
+            end
+          end
+          say "Draft Results:"
+          @season.buyers.each do |buyer|
+            say "#{buyer}:"
+            buyer_games[buyer.name].sort{|a, b| a.to_i <=> b.to_i}.each do |g|
+              say "\t#{@season.game_by_identifier(g)}"
             end
           end
         end
