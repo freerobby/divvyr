@@ -48,7 +48,7 @@ loop do
       menu.choice 'delete game' do
         selected_game = nil
         choose do |game|
-          game.index = :number
+          game.index = :letter
           game.index_suffix = ') '
           game.prompt = 'Which game would you like to delete?'
           game.choice 'cancel' do
@@ -79,7 +79,7 @@ loop do
       menu.choice 'edit a buyer' do
         selected_buyer = nil
         choose do |buyer|
-          buyer.index = :number
+          buyer.index = :letter
           buyer.index_suffix = ') '
           buyer.prompt = 'Which buyer would you like to edit?'
           buyer.choice 'cancel' do
@@ -102,7 +102,7 @@ loop do
       menu.choice 'remove a buyer' do
         selected_buyer = nil
         choose do |buyer|
-          buyer.index = :number
+          buyer.index = :letter
           buyer.index_suffix = ') '
           buyer.prompt = 'Which buyer would you like to remove?'
           buyer.choice 'cancel' do
@@ -121,7 +121,7 @@ loop do
       menu.choice 'input buyer game preferences' do
         selected_buyer = nil
         choose do |buyer|
-          buyer.index = :number
+          buyer.index = :letter
           buyer.index_suffix = ') '
           buyer.prompt = 'Buyer to enter preferences for: '
           buyer.choice 'cancel' do
@@ -142,13 +142,29 @@ loop do
               game.index = :letter
               game.index_suffix = ') '
               game.prompt = "Enter choice ##{selected_buyer.games_priority.size + 1}: "
-              game.choice 'finish later' do
+
+              game.choice 'enter CSV list' do
+                puts "Enter games: "
+                csvgames = gets
+                ids = csvgames.split(',')
+                ids.each {|id| id.strip!}
+                ids.each do |id|
+                  if @season.game_by_identifier(id)
+                    selected_buyer.games_priority << @season.game_by_identifier(id).identifier
+                  else
+                    puts "Warning: game not found for identifier: #{id}"
+                  end
+                end
                 selected_game = nil
               end
+
               @season.list_games_without_buyer_preference(selected_buyer).each do |game_remaining|
                 game.choice game_remaining do
                   selected_game = game_remaining
                 end
+              end
+              game.choice 'finish later' do
+                selected_game = nil
               end
             end
             if !selected_game.nil?

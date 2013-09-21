@@ -64,7 +64,7 @@ class Season
   def game_by_identifier(id)
     game = nil
     games.each do |g|
-      game = g if g.identifier == id
+      game = g if g.identifier.strip.to_s == id.strip.to_s
     end
     game
   end
