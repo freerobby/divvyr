@@ -1,0 +1,14 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    fastercsv (1.5.3)
+    highline (1.6.1)
+    ruby-termios (0.9.6)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  fastercsv (= 1.5.3)
+  highline (= 1.6.1)
+  ruby-termios (~> 0.9)
