@@ -1,6 +1,6 @@
 require './boot.rb'
 
-require 'faster_csv'
+require 'csv'
 require 'highline/import'
 
 require './buyer'
@@ -30,7 +30,7 @@ loop do
     
     menu.choice 'import games' do
       path = ask("Where's your spreadsheet: ")
-      FasterCSV.foreach(path, :headers => true) do |line|
+      CSV.foreach(path, :headers => true) do |line|
         id = line.fields[0]
         data = []
         for datum_index in 1..(line.fields.size - 1) do
