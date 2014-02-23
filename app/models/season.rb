@@ -13,9 +13,9 @@ class Season
   def self.load_from_file(filename)
     data = File.open("./seasons/#{filename}.yml", "r") {|file| YAML::load(file)}
     season = Season.new
-    season.buyers = data.buyers
-    season.entries = data.entries
-    season.games = data.games
+    season.buyers = data[:buyers]
+    season.entries = data[:entries]
+    season.games = data[:games]
     say "Loaded #{@season_name}.yml with #{season.games.size} games and #{season.buyers.size} buyers."
     season
   end

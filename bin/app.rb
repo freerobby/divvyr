@@ -33,11 +33,11 @@ loop do
     
     menu.prompt = "Choose an option: "
     
-    menu.choice 'load season' do
+    menu.choice 'Load season' do
       get_season_name
       @season = Season.load_from_file(@season_name)
     end
-    menu.choice 'save season' do
+    menu.choice 'Save season' do
       require_season_name
       @season.save_to_file(@season_name)
     end
@@ -57,6 +57,22 @@ loop do
         @season.games << Game.new(id, data)
       end
       say "Import complete. Season now has #{@season.games.size} games."
+    end
+    if !@season.games.empty? && !@season.buyers.empty?
+      menu.choice 'Create buyer spreadsheets' do
+        require_season_name
+
+        @season.buyers.each do |buyer|
+          name = buyer.name.gsub(' ', '-').downcase
+          filename = "./spreadsheets/#{@season_name}-#{name}.csv"
+          CSV.open(filename, 'wb') do |csv|
+            @season.games.each do |game|
+              csv << [game.identifier] + game.data
+            end
+          end
+          say "Generated spreadsheet: #{filename}."
+        end
+      end
     end
     if !@season.games.empty?
       menu.choice 'view games' do

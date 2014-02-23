@@ -17,8 +17,7 @@ class ImportMlbGamesMenu
       end
     end
 
-    default_year = Time.now.year
-    year = ask("Enter season year to fetch [default: #{default_year}]: ") || default_year
+    year = ask("Enter season year to fetch [e.g. '2014]: ")
     MlbImporter.new.get_valid_games(team_id, year).each {|g| season.games << g}
     say "Import complete. Season now has #{season.games.size} games."
   end

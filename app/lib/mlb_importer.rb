@@ -46,7 +46,7 @@ class MlbImporter
     last_game = 0
     parsed_games.each_with_index do |parsed_game|
       if parsed_game[:location] == 'Fenway Park' && !parsed_game[:description].include?('All-Stars')
-        games << Game.new("HG#{last_game + 1}", [parsed_game[:time], parsed_game[:description]])
+        games << Game.new("#{last_game + 1}", [parsed_game[:time], parsed_game[:description]])
         last_game += 1
       end
     end
