@@ -48,7 +48,7 @@ loop do
     
     menu.choice 'import CSV games' do
       path = ask("Where's your spreadsheet: ")
-      CSV.foreach(path, :headers => true) do |line|
+      CSV.foreach(path, headers: true) do |line|
         id = line.fields[0]
         data = []
         for datum_index in 1..(line.fields.size - 1) do
@@ -71,6 +71,18 @@ loop do
             end
           end
           say "Generated spreadsheet: #{filename}."
+        end
+      end
+
+      menu.choice 'Import buyer choices' do
+        @season.buyers.each do |buyer|
+          name = buyer.name.gsub(' ', '-').downcase
+          filename = "./spreadsheets/#{@season_name}-#{name}.csv"
+          buyer.games_priority = []
+          CSV.foreach(filename, headers: false) do |csv|
+            buyer.games_priority << csv[0]
+          end
+          say "Imported spreadsheet: #{filename}. Buyer prioritized #{buyer.games_priority.count} games."
         end
       end
     end
