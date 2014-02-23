@@ -1,12 +1,14 @@
-require './boot.rb'
+#!/usr/bin/ruby
+
+require './app/boot.rb'
 
 require 'csv'
 require 'highline/import'
 
-require './buyer'
-require './entry'
-require './game'
-require './season'
+require './app/models/buyer'
+require './app/models/entry'
+require './app/models/game'
+require './app/models/season'
 
 say "Welcome to <%= color('divvyr', RED) %>."
 
