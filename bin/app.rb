@@ -5,6 +5,8 @@ require './app/boot.rb'
 require 'csv'
 require 'highline/import'
 
+require './app/lib/mlb_importer'
+
 require './app/models/buyer'
 require './app/models/entry'
 require './app/models/game'
@@ -37,8 +39,19 @@ loop do
       require_season_name
       @season.save_to_file(@season_name)
     end
+
+    menu.choice 'Import MLB games' do
+      say 'Team IDs are as follows:'
+      MlbImporter::TEAM_IDS.each do |team, id|
+        say "#{team}: #{id}"
+      end
+      id = ask("Enter team ID: ")
+      year = ask("Enter season year to fetch: ")
+      MlbImporter.new.get_valid_games(id, year).each {|g| @season.games << g}
+      say "Import complete. Season now has #{@season.games.size} games."
+    end
     
-    menu.choice 'import games' do
+    menu.choice 'import CSV games' do
       path = ask("Where's your spreadsheet: ")
       CSV.foreach(path, :headers => true) do |line|
         id = line.fields[0]
@@ -48,7 +61,7 @@ loop do
         end
         @season.games << Game.new(id, data)
       end
-      say "Import complete (season now has #{@season.games.size} games)"
+      say "Import complete. Season now has #{@season.games.size} games."
     end
     if !@season.games.empty?
       menu.choice 'view games' do
