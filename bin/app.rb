@@ -14,6 +14,14 @@ say "Welcome to <%= color('divvyr', RED) %>."
 
 @season = Season.new
 
+def get_season_name
+  puts 'Enter season name:'
+  @season_name = gets.strip!
+end
+def require_season_name
+  get_season_name if @season_name.nil?
+end
+
 loop do
   choose do |menu|
     menu.index = :letter
@@ -22,18 +30,12 @@ loop do
     menu.prompt = "Choose an option: "
     
     menu.choice 'load season' do
-      puts 'Enter season name: '
-      @season_name = gets.strip!
-      @season = File.open("./seasons/#{@season_name}.yml", "r") {|file| YAML::load(file)}
-      say "Loaded #{@season_name}.yml with #{@season.games.size} games and #{@season.buyers.size} buyers."
+      get_season_name
+      @season = Season.load_from_file(@season_name)
     end
     menu.choice 'save season' do
-      if @season_name.nil?
-        puts 'Enter season name: '
-        @season_name = gets.strip!
-      end
-      File.open("./seasons/#{@season_name}.yml", "w") {|file| YAML.dump(@season, file)}
-      say "Season saved to #{@season_name}.yml."
+      require_season_name
+      @season.save_to_file(@season_name)
     end
     
     menu.choice 'import games' do
@@ -383,12 +385,8 @@ loop do
     
     menu.choice 'exit' do
       if agree("Save before exit?: ")
-        if @season_name.nil?
-          puts 'Enter season name: '
-          @season_name = gets.strip!
-        end
-        File.open("./seasons/#{@season_name}.yml", "w") {|file| YAML.dump(@season, file)}
-        say "Season saved to #{@season_name}.yml."
+        require_season_name
+        @season.save_to_file(@season_name)
       end
       exit
     end

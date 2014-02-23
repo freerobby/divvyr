@@ -1,3 +1,4 @@
+require 'highline/import'
 require 'yaml'
 
 class Season
@@ -7,6 +8,24 @@ class Season
     @games = []
     @buyers = []
     @entries = []
+  end
+
+  def self.load_from_file(filename)
+    data = File.open("./seasons/#{filename}.yml", "r") {|file| YAML::load(file)}
+    season = Season.new
+    season.buyers = data.buyers
+    season.entries = data.entries
+    season.games = data.games
+    say "Loaded #{@season_name}.yml with #{season.games.size} games and #{season.buyers.size} buyers."
+    season
+  end
+  def save_to_file(filename)
+    File.open("./seasons/#{filename}.yml", "w") {|file| YAML.dump({
+      buyers: self.buyers,
+      entries: self.entries,
+      games: self.games
+    }, file)}
+    say "Season saved to #{filename}.yml."
   end
   
   def list_games
