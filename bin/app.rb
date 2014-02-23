@@ -7,6 +7,8 @@ require 'highline/import'
 
 require './app/lib/mlb_importer'
 
+require './app/menus/import_mlb_games_menu'
+
 require './app/models/buyer'
 require './app/models/entry'
 require './app/models/game'
@@ -41,14 +43,7 @@ loop do
     end
 
     menu.choice 'Import MLB games' do
-      say 'Team IDs are as follows:'
-      MlbImporter::TEAM_IDS.each do |team, id|
-        say "#{team}: #{id}"
-      end
-      id = ask("Enter team ID: ")
-      year = ask("Enter season year to fetch: ")
-      MlbImporter.new.get_valid_games(id, year).each {|g| @season.games << g}
-      say "Import complete. Season now has #{@season.games.size} games."
+      ImportMlbGamesMenu.invoke(@season)
     end
     
     menu.choice 'import CSV games' do
