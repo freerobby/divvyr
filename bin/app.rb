@@ -420,7 +420,7 @@ loop do
           @season.buyers.each do |buyer|
             say "#{buyer}:"
             buyer_games[buyer.name].sort{|a, b| a.to_i <=> b.to_i}.each do |g|
-              say "\t#{@season.game_by_identifier(g)}"
+              say "\t#{@season.game_by_identifier(g)} (choice ##{buyer.games_priority.index(g)+1})"
             end
           end
         end
