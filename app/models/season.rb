@@ -2,12 +2,13 @@ require 'highline/import'
 require 'yaml'
 
 class Season
-  attr_accessor :games, :buyers, :entries
+  attr_accessor :games, :buyers, :entries, :num_draft_rounds
   
   def initialize
     @games = []
     @buyers = []
     @entries = []
+    @num_draft_rounds = 5
   end
 
   def self.load_from_file(filename)
@@ -16,14 +17,16 @@ class Season
     season.buyers = data[:buyers]
     season.entries = data[:entries]
     season.games = data[:games]
-    say "Loaded #{@season_name}.yml with #{season.games.size} games and #{season.buyers.size} buyers."
+    season.num_draft_rounds = data[:num_draft_rounds] if data[:num_draft_rounds]
+    say "Loaded #{@season_name}.yml with #{season.games.size} games, #{season.buyers.size} buyers and #{season.num_draft_rounds} draft rounds."
     season
   end
   def save_to_file(filename)
     File.open("./seasons/#{filename}.yml", "w") {|file| YAML.dump({
       buyers: self.buyers,
       entries: self.entries,
-      games: self.games
+      games: self.games,
+      num_draft_rounds: self.num_draft_rounds
     }, file)}
     say "Season saved to #{filename}.yml."
   end
@@ -47,23 +50,23 @@ class Season
     puts "#{buyers.size} buyer#{'s' if buyers.size != 1} with rights to #{games.size} game#{'s' if games.size != 1}"
   end
   
-  def num_draft_entries_for(buyer, num_games)
-    num_entries = buyer.number_of_games / num_games
-    num_entries += 1 if buyer.number_of_games % num_games > 0
+  def num_draft_entries_for(buyer)
+    num_entries = buyer.number_of_games / num_draft_rounds
+    num_entries += 1 if buyer.number_of_games % num_draft_rounds > 0
     num_entries
   end
   
-  def create_draft_entries_for(buyer, num_games)
-    num_entries = num_draft_entries_for(buyer, num_games)
+  def create_draft_entries_for(buyer)
+    num_entries = num_draft_entries_for(buyer)
     for this_entry_index in 1..num_entries do
-      extras = buyer.number_of_games % num_games
+      extras = buyer.number_of_games % num_draft_rounds
       if this_entry_index < num_entries || extras == 0
         this_entry_data = []
-        num_games.times {this_entry_data << 'P'}
+        num_draft_rounds.times {this_entry_data << 'P'}
         entries << Entry.new(buyer.name, this_entry_data)
       else # Partial entry
         this_entry_data = []
-        (num_games - extras).times {this_entry_data << 'N'}
+        (num_draft_rounds - extras).times {this_entry_data << 'N'}
         extras.times {this_entry_data << 'P'}
         entries << Entry.new(buyer.name, this_entry_data)
       end
@@ -73,7 +76,7 @@ class Season
   def generate_entries
     self.entries = []
     buyers.each do |b|
-      create_draft_entries_for(b, 5)
+      create_draft_entries_for(b)
     end
   end
   def randomize_entries

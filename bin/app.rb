@@ -253,9 +253,17 @@ loop do
     end
     
     if !@season.games.empty? && !@season.buyers.empty?
+      menu.choice "Set number of draft rounds (currently #{@season.num_draft_rounds})" do
+        old_num = @season.num_draft_rounds
+        @season.num_draft_rounds = ask("Number of draft rounds: ", Integer)
+        if old_num != @season.num_draft_rounds
+          @season.generate_entries
+          @season.randomize_entries
+        end
+      end
       menu.choice 'prepare draft' do
         @season.buyers.each do |buyer|
-          puts "#{buyer.name} gets #{@season.num_draft_entries_for(buyer, 5)} entr#{@season.num_draft_entries_for(buyer, 5) == 1 ? 'y' : 'ies'}"
+          puts "#{buyer.name} gets #{@season.num_draft_entries_for(buyer)} entr#{@season.num_draft_entries_for(buyer) == 1 ? 'y' : 'ies'}"
         end
         @season.generate_entries
         puts "Entries are as follows:"
