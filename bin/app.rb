@@ -6,8 +6,10 @@ require 'csv'
 require 'highline/import'
 
 require './app/lib/mlb_importer'
+require './app/lib/nba_importer'
 
 require './app/menus/import_mlb_games_menu'
+require './app/menus/import_nba_games_menu'
 
 require './app/models/buyer'
 require './app/models/entry'
@@ -44,6 +46,10 @@ loop do
 
     menu.choice 'Import MLB games' do
       ImportMlbGamesMenu.invoke(@season)
+    end
+
+    menu.choice 'Import NBA games' do
+      ImportNbaGamesMenu.invoke(@season)
     end
     
     menu.choice 'import CSV games' do

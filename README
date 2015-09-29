@@ -4,4 +4,4 @@ Quick Start:
 $ gem install bundler
 $ gem update --system
 $ bundle install
-$ ruby app.rb
+$ ruby bin/app.rb
