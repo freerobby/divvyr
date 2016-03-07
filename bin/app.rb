@@ -356,13 +356,14 @@ loop do
           @season.entries = new_entries
         end
         menu.choice 'validate draft entries' do
-          puts "Season has #{@season.games.size} games"
+          games_count = @season.games.map(&:available).inject{|sum,x| sum + x}
+          puts "Season has #{games_count} games"
           count = 0
           @season.entries.each do |entry|
             entry.round_data.each {|l| count +=1 if l == 'P'}
           end
           puts "Entries will draft #{count} games"
-          if @season.games.size == count
+          if games_count == count
             say "Current state of entries is <%= color('valid', GREEN) %>."
           else
             say "Current state of entries is <%= color('invalid', RED) %>."
@@ -376,10 +377,13 @@ loop do
           
           num_rounds = @season.entries.first.round_data.size
           remaining_game_ids = []
-          @season.games.each {|g| remaining_game_ids << g.identifier}
-          
+          @season.games.each do |g|
+            g.available.times {remaining_game_ids << g.identifier}
+          end
+
           for round_index in 1..num_rounds do
             break if remaining_game_ids.empty?
+
             say "Beginning draft round #{round_index}"
             counter = 1
             if round_index % 2 == 1
@@ -388,10 +392,10 @@ loop do
               
                 if entry.round_data[round_index - 1] == 'P'
                   buyer.games_priority.each do |game_id|
-                    if !remaining_game_ids.index(game_id).nil?
+                    if !remaining_game_ids.index(game_id).nil? && !buyer_games[buyer.name].include?(game_id)
                       say "Round #{round_index}, pick #{counter} belongs to #{buyer.name} (choice ##{buyer.games_priority.index(game_id)+1}): #{@season.game_by_identifier(game_id)}\n"
                       buyer_games[buyer.name] << game_id
-                      remaining_game_ids.delete(game_id)
+                      remaining_game_ids.delete_at(remaining_game_ids.index(game_id) || remaining_game_ids.length)
                       break
                     end
                   end
@@ -407,10 +411,10 @@ loop do
               
                 if entry.round_data[round_index - 1] == 'P'
                   buyer.games_priority.each do |game_id|
-                    if !remaining_game_ids.index(game_id).nil?
+                    if !remaining_game_ids.index(game_id).nil? && !buyer_games[buyer.name].include?(game_id)
                       say "Round #{round_index}, pick #{counter} belongs to #{buyer.name} (choice ##{buyer.games_priority.index(game_id)+1}): #{@season.game_by_identifier(game_id)}\n"
                       buyer_games[buyer.name] << game_id
-                      remaining_game_ids.delete(game_id)
+                      remaining_game_ids.delete_at(remaining_game_ids.index(game_id) || remaining_game_ids.length)
                       break
                     end
                   end

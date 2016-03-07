@@ -40,15 +40,13 @@ class MlbImporter
     'Washington Nationals' => 120,
   }
 
-  def get_valid_games(team_id, year)
-    parsed_games = get_schedule(team_id, year)
+  def get_valid_games(team_id)
+    parsed_games = get_schedule(team_id)
     games = []
     last_game = 0
     parsed_games.each_with_index do |parsed_game|
-      if parsed_game[:location] == 'Fenway Park' && !parsed_game[:description].include?('All-Stars')
-        games << Game.new("#{last_game + 1}", [parsed_game[:time], parsed_game[:description]])
-        last_game += 1
-      end
+      games << Game.new("#{last_game + 1}", [parsed_game[:time], parsed_game[:description]])
+      last_game += 1  
     end
     games
   end
@@ -58,8 +56,8 @@ class MlbImporter
   COL_START_TIME = 1
   COL_SUBJECT = 3
   COL_LOCATION = 4
-  def get_schedule(team_id, year)
-    data = get_csv_schedule(team_id, year)
+  def get_schedule(team_id)
+    data = get_csv_schedule(team_id)
     games = []
     CSV.parse(data, headers: true).each do |row|
       games << {
@@ -71,11 +69,11 @@ class MlbImporter
     games
   end
 
-  def get_csv_schedule(team_id, year)
-    open(lookup_url(team_id, year)) {|f| f.read}
+  def get_csv_schedule(team_id)
+    open(lookup_url(team_id)) {|f| f.read}
   end
 
-  def lookup_url(team_id, year)
-    "http://mlb.mlb.com/soa/ical/schedule.csv?home_team_id=#{team_id}&season=#{year}"
+  def lookup_url(team_id)
+    "http://mlb.mlb.com/ticketing-client/csv/EventTicketPromotionPrice.tiksrv?team_id=#{team_id}&home_team_id=#{team_id}&display_in=singlegame&ticket_category=Tickets&site_section=Default&sub_category=Default&leave_empty_games=true&event_type=T&event_type=Y"
   end
 end
