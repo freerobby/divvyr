@@ -10,7 +10,7 @@ class NbaImporter
     games = []
     last_game = 0
     parsed_games.each_with_index do |parsed_game|
-      if parsed_game[:location] == 'Boston' && parsed_game[:time] >= Time.new(2015, 10, 28)
+      if parsed_game[:location] == 'Boston' && parsed_game[:time] >= Time.new(2016, 10, 28)
         games << Game.new("#{last_game + 1}", [parsed_game[:time], parsed_game[:description]])
         last_game += 1
       end
