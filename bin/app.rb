@@ -54,13 +54,14 @@ loop do
     
     menu.choice 'import CSV games' do
       path = ask("Where's your spreadsheet: ")
+      available = ask('How many available slots for eaach game? ').to_i
       CSV.foreach(path, headers: true) do |line|
         id = line.fields[0]
         data = []
         for datum_index in 1..(line.fields.size - 1) do
           data << line.fields[datum_index]
         end
-        @season.games << Game.new(id, data)
+        @season.games << Game.new(id, data, available)
       end
       say "Import complete. Season now has #{@season.games.size} games."
     end
