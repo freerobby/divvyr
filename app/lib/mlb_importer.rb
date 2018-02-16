@@ -45,6 +45,7 @@ class MlbImporter
     games = []
     last_game = 0
     parsed_games.each_with_index do |parsed_game|
+      next if parsed_game[:location].include?("Ft. Myers")
       games << Game.new("#{last_game + 1}", [parsed_game[:time], parsed_game[:description]])
       last_game += 1  
     end
@@ -74,6 +75,6 @@ class MlbImporter
   end
 
   def lookup_url(team_id)
-    "http://mlb.mlb.com/ticketing-client/csv/EventTicketPromotionPrice.tiksrv?team_id=#{team_id}&home_team_id=#{team_id}&display_in=singlegame&ticket_category=Tickets&site_section=Default&sub_category=Default&leave_empty_games=true&event_type=T&event_type=Y"
+    "http://www.ticketing-client.com/ticketing-client/csv/EventTicketPromotionPrice.tiksrv?team_id=#{team_id}&home_team_id=#{team_id}&display_in=singlegame&ticket_category=Tickets&site_section=Default&sub_category=Default&leave_empty_games=true&event_type=Y"
   end
 end
