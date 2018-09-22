@@ -1,10 +1,11 @@
 class Buyer
-  attr_accessor :name, :games_priority
+  attr_accessor :name, :games_priority, :multiple_slots_per_game
   
-  def initialize(name, number_of_games)
+  def initialize(name, number_of_games, multiple_slots_per_game)
     @name = name
     @number_of_games = number_of_games.to_i
     @games_priority = []
+    @multiple_slots_per_game = multiple_slots_per_game
   end
   
   def number_of_games

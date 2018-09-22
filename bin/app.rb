@@ -16,6 +16,8 @@ require './app/models/entry'
 require './app/models/game'
 require './app/models/season'
 
+require './app/lib/drafter'
+
 say "Welcome to <%= color('divvyr', RED) %>."
 
 @season = Season.new
@@ -54,7 +56,7 @@ loop do
     
     menu.choice 'import CSV games' do
       path = ask("Where's your spreadsheet: ")
-      available = ask('How many available slots for eaach game? ').to_i
+      available = ask('How many available slots for each game? ').to_i
       CSV.foreach(path, headers: true) do |line|
         id = line.fields[0]
         data = []
@@ -121,8 +123,20 @@ loop do
     
     menu.choice 'add a buyer' do
       name = ask("Buyer name: ")
-      num_games = ask("Number of games: ", Integer)
-      @season.buyers << Buyer.new(name, num_games)
+      num_games = ask("Number of slots: ", Integer)
+      multi_slot = false
+      choose do |multi|
+        multi.index = :letter
+        multi.index_suffix = ') '
+        multi.prompt = "Multiple slots per game?"
+        multi.choice "Yes" do
+          multi_slot = true
+        end
+        multi.choice "No" do
+          multi_slot = false
+        end
+      end
+      @season.buyers << Buyer.new(name, num_games, multi_slot)
     end
     if !@season.buyers.empty?
       menu.choice 'list buyers' do
@@ -393,10 +407,12 @@ loop do
               
                 if entry.round_data[round_index - 1] == 'P'
                   buyer.games_priority.each do |game_id|
-                    if !remaining_game_ids.index(game_id).nil? && !buyer_games[buyer.name].include?(game_id)
+                    # Note: a bug exists where a buyer does not want any remaining games because the only games left are games they already have seats at.
+                    # In practice, if this happens, divvy up the games left over among buyers in this position.
+                    if Drafter.is_game_remaining?(remaining_game_ids, game_id) && Drafter.buyer_wants_game?(buyer, buyer_games, game_id)
                       say "Round #{round_index}, pick #{counter} belongs to #{buyer.name} (choice ##{buyer.games_priority.index(game_id)+1}): #{@season.game_by_identifier(game_id)}\n"
                       buyer_games[buyer.name] << game_id
-                      remaining_game_ids.delete_at(remaining_game_ids.index(game_id) || remaining_game_ids.length)
+                      remaining_game_ids.delete_at(remaining_game_ids.index(game_id))
                       break
                     end
                   end
@@ -412,10 +428,10 @@ loop do
               
                 if entry.round_data[round_index - 1] == 'P'
                   buyer.games_priority.each do |game_id|
-                    if !remaining_game_ids.index(game_id).nil? && !buyer_games[buyer.name].include?(game_id)
+                    if Drafter.is_game_remaining?(remaining_game_ids, game_id) && Drafter.buyer_wants_game?(buyer, buyer_games, game_id)
                       say "Round #{round_index}, pick #{counter} belongs to #{buyer.name} (choice ##{buyer.games_priority.index(game_id)+1}): #{@season.game_by_identifier(game_id)}\n"
                       buyer_games[buyer.name] << game_id
-                      remaining_game_ids.delete_at(remaining_game_ids.index(game_id) || remaining_game_ids.length)
+                      remaining_game_ids.delete_at(remaining_game_ids.index(game_id))
                       break
                     end
                   end
