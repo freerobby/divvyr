@@ -4,7 +4,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'ap
 
 describe Buyer do
   before do
-    @buyer = Buyer.new('Joe Smith', 5)
+    @buyer = Buyer.new('Joe Smith', 5, 0)
   end
   describe '#number_of_games' do
     it 'returns number of games' do

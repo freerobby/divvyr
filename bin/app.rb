@@ -124,19 +124,8 @@ loop do
     menu.choice 'add a buyer' do
       name = ask("Buyer name: ")
       num_games = ask("Number of slots: ", Integer)
-      multi_slot = false
-      choose do |multi|
-        multi.index = :letter
-        multi.index_suffix = ') '
-        multi.prompt = "Multiple slots per game?"
-        multi.choice "Yes" do
-          multi_slot = true
-        end
-        multi.choice "No" do
-          multi_slot = false
-        end
-      end
-      @season.buyers << Buyer.new(name, num_games, multi_slot)
+      max_multislot_games = ask("Max number of games to use multiple slots on: ", Integer)
+      @season.buyers << Buyer.new(name, num_games, max_multislot_games)
     end
     if !@season.buyers.empty?
       menu.choice 'list buyers' do
