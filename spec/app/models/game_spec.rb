@@ -8,10 +8,10 @@ describe Game do
   end
   describe '#to_s' do
     it 'includes identifier' do
-      @game.to_s.should include('Red Sox')
+      expect(@game.to_s).to include('Red Sox')
     end
     it 'includes pipe-separated data' do
-      @game.to_s.should include('P | 35')
+      expect(@game.to_s).to include('P | 35')
     end
   end
 end

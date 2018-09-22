@@ -8,10 +8,10 @@ describe Entry do
   end
   describe '#to_s' do
     it 'includes name of buyer' do
-      @game.to_s.should include('Joe Smith')
+      expect(@game.to_s).to include('Joe Smith')
     end
     it 'includes comma-separated round data' do
-      @game.to_s.should include('P, N, P')
+      expect(@game.to_s).to include('P, N, P')
     end
   end
 end

@@ -108,11 +108,11 @@ START_DATE,START_TIME,START_TIME_ET,SUBJECT,LOCATION,DESCRIPTION,END_DATE,END_DA
 
   describe '#get_valid_games' do
     it 'returns all home games that are not all star games' do
-      FakeWeb.register_uri(:get, 'http://mlb.mlb.com/soa/ical/schedule.csv?home_team_id=111&season=2014', :body => RED_SOX_2014)
-      games = MlbImporter.new.get_valid_games(111, 2014)
-      games.count.should == 81
+      FakeWeb.register_uri(:get, 'http://www.ticketing-client.com/ticketing-client/csv/EventTicketPromotionPrice.tiksrv?team_id=111&home_team_id=111&display_in=singlegame&ticket_category=Tickets&site_section=Default&sub_category=Default&leave_empty_games=true&event_type=Y', :body => RED_SOX_2014)
+      games = MlbImporter.new.get_valid_games(111)
+      expect(games.count).to eql(81)
       games.each do |g|
-        g.data[1].should_not include('All-Stars')
+        expect(g.data[1]).not_to include('All-Stars')
       end
     end
   end
